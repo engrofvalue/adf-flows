@@ -99,6 +99,12 @@
 						"referenceName": "DS_Rest_Resource_1",
 						"type": "DatasetReference"
 					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_input_dir",
+						"type": "DatasetReference"
+					}
 				]
 			}
 		],
