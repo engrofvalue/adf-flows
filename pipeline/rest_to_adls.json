@@ -1,9 +1,11 @@
 {
 	"name": "rest_to_adls",
 	"properties": {
+		"description": "Copy data from rest and create/load csv file in the azure blob storage",
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy rest to adls",
+				"description": "Copy data from rest and create/load csv file in the azure blob storage",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {

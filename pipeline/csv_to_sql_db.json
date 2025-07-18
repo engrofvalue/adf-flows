@@ -1,9 +1,11 @@
 {
-	"name": "pipeline1",
+	"name": "csv_to_sql_db",
 	"properties": {
+		"description": "Copy csv file from azure blob storage to azure sql db",
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy csv to sql db",
+				"description": "Copy csv file from azure blob storage to azure sql db",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
