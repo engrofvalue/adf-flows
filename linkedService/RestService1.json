@@ -1,0 +1,13 @@
+{
+	"name": "RestService1",
+	"properties": {
+		"description": "Rest source",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://reqres.in/api/users",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
