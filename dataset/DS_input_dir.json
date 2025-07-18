@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText2",
+	"name": "DS_input_dir",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_storage_inputfolder",

@@ -1,5 +1,5 @@
 {
-	"name": "Binary1",
+	"name": "DS_binary_input",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "HttpServer1",

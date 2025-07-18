@@ -1,5 +1,5 @@
 {
-	"name": "BlobInputDataset",
+	"name": "DS_raw_data",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",

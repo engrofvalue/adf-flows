@@ -18,7 +18,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText2",
+						"referenceName": "DS_input_dir",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -105,7 +105,7 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DelimitedText2",
+									"referenceName": "DS_input_dir",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
@@ -180,13 +180,13 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "DelimitedText2",
+												"referenceName": "DS_input_dir",
 												"type": "DatasetReference"
 											}
 										],
 										"outputs": [
 											{
-												"referenceName": "DelimitedText3",
+												"referenceName": "DS_output_dir",
 												"type": "DatasetReference"
 											}
 										]

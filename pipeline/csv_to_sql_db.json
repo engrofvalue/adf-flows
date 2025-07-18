@@ -95,13 +95,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "BlobInputDataset",
+						"referenceName": "DS_raw_data",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "SQLSinkDataset",
+						"referenceName": "DS_SQLSinkDataset_1",
 						"type": "DatasetReference"
 					}
 				]

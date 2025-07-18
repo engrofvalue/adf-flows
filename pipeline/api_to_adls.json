@@ -41,13 +41,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Binary1",
+						"referenceName": "DS_binary_input",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "Binary2",
+						"referenceName": "DS_binary_output",
 						"type": "DatasetReference"
 					}
 				]

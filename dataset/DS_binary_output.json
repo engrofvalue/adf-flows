@@ -1,5 +1,5 @@
 {
-	"name": "Binary2",
+	"name": "DS_binary_output",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage2",

@@ -1,5 +1,5 @@
 {
-	"name": "SQLSinkDataset",
+	"name": "DS_SQLSinkDataset_1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase2",
