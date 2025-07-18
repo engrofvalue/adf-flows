@@ -2,7 +2,7 @@
 	"name": "DS_raw_data",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage1",
+			"referenceName": "ls_storage_inputfolder",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
