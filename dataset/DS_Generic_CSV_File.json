@@ -1,5 +1,5 @@
 {
-	"name": "DS_GenericCSVFile",
+	"name": "DS_Generic_CSV_File",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_ADLS",

@@ -10,6 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat(formatDateTime(utcNow(), 'yyyy'), '/', \n        toUpper(formatDateTime(utcNow(), 'MMM')), '/', \n        formatDateTime(utcNow(), 'dd'), '/binary/')",
+					"type": "Expression"
+				},
 				"fileSystem": "output"
 			}
 		}

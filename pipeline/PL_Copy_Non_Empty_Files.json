@@ -1,11 +1,11 @@
 {
-	"name": "nonempty_files",
+	"name": "PL_Copy_Non_Empty_Files",
 	"properties": {
 		"description": "Evaluate all the files in the azure blob storage folder and only copy the non-empty files",
 		"activities": [
 			{
 				"name": "Get Metadata of all the files",
-				"description": "Fetch the meta data of all the files from the azure blob storage folder",
+				"description": "Fetch the meta data of all the files from the provided adls folder",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -18,15 +18,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_input_dir",
+						"referenceName": "DS_Generic_CSV_File",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"childItems"
 					],
 					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"recursive": true,
+						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -199,6 +198,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"folderName": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"filename": {
 				"type": "String"
