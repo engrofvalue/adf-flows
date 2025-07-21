@@ -204,8 +204,11 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "DS_output_dir",
-												"type": "DatasetReference"
+												"referenceName": "DS_Generic_Folder",
+												"type": "DatasetReference",
+												"parameters": {
+													"FolderName": "output"
+												}
 											}
 										]
 									}

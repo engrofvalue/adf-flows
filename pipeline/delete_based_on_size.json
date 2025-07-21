@@ -16,8 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_input_dir",
-						"type": "DatasetReference"
+						"referenceName": "DS_Generic_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": {
+								"value": "input",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -33,7 +39,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For each file",
 				"type": "ForEach",
 				"dependsOn": [
 					{
