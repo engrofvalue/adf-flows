@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get input folder metadata').output.childItems",
+						"value": "@activity('Get folder metadata').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,

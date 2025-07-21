@@ -1,5 +1,5 @@
 {
-	"name": "get_latest_files",
+	"name": "PL_Get_Latest_File",
 	"properties": {
 		"description": "This pipeline gets the latest pipeline",
 		"activities": [
@@ -17,8 +17,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_input_dir",
-						"type": "DatasetReference"
+						"referenceName": "DS_Generic_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": "input"
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -66,10 +69,14 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DS_Generic_Folder",
+									"referenceName": "DS_Generic_CSV_File",
 									"type": "DatasetReference",
 									"parameters": {
-										"FolderName": "input"
+										"FolderName": "input",
+										"FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
 									}
 								},
 								"fieldList": [
@@ -86,7 +93,7 @@
 							}
 						},
 						{
-							"name": "If Condition1",
+							"name": "If Condition - Get Latest File",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -104,7 +111,7 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Set Variable",
+										"name": "Latest Filename",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -121,11 +128,11 @@
 										}
 									},
 									{
-										"name": "Set variable1",
+										"name": "Latest Modified Date",
 										"type": "SetVariable",
 										"dependsOn": [
 											{
-												"activity": "Set Variable",
+												"activity": "Latest Filename",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -151,7 +158,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Copy latest file",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -173,7 +180,7 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
+							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
@@ -184,7 +191,7 @@
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
 							"type": "JsonWriteSettings"
@@ -194,10 +201,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText2",
+						"referenceName": "DS_Generic_CSV_File",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": {
+							"FolderName": "input",
+							"FileName": {
 								"value": "@variables('latestfile')",
 								"type": "Expression"
 							}
@@ -206,7 +214,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Json1",
+						"referenceName": "DS_Generic_Json_File",
 						"type": "DatasetReference"
 					}
 				]
