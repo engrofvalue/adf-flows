@@ -1,10 +1,10 @@
 {
-	"name": "bulk_copy_sql_to_csv",
+	"name": "PL_Bulk_Copy_Sql_To_Csv",
 	"properties": {
 		"description": "This pipeline bulk copies data from sql to csv",
 		"activities": [
 			{
-				"name": "Lookup1",
+				"name": "Lookup DB Tables",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -23,18 +23,18 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "DS_Table_Schema",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For each table",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "Lookup DB Tables",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -43,13 +43,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup1').output.value",
+						"value": "@activity('Lookup DB Tables').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy data1",
+							"name": "Copy table data to csv",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -69,7 +69,7 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
+										"type": "AzureBlobFSWriteSettings"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
@@ -89,14 +89,14 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable2",
+									"referenceName": "DS_Generic_Sql_DB",
 									"type": "DatasetReference",
 									"parameters": {
-										"schemaname": {
+										"SchemaName": {
 											"value": "@item().table_schema",
 											"type": "Expression"
 										},
-										"tablename": {
+										"TableName": {
 											"value": "@item().table_name",
 											"type": "Expression"
 										}
@@ -105,8 +105,15 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DelimitedText4",
-									"type": "DatasetReference"
+									"referenceName": "DS_Generic_CSV_File",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": "ouput",
+										"FileName": {
+											"value": "@concat(item().table_schema, item().table_name)",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}

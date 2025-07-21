@@ -213,54 +213,6 @@
 									"type": "Expression"
 								}
 							}
-						},
-						{
-							"name": "Schema Name",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup Table schema",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "schemaName",
-								"value": {
-									"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Table Name",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup Table schema",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "tableName",
-								"value": {
-									"value": "@activity('Lookup Table schema').output.firstRow.table_name",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
