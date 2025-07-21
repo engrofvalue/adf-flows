@@ -108,11 +108,8 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DS_Generic_Folder",
-									"type": "DatasetReference",
-									"parameters": {
-										"FolderName": "input"
-									}
+									"referenceName": "DS_Generic_CSV_File",
+									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
 							}
