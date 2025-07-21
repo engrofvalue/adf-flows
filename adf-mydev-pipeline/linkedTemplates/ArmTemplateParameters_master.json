@@ -17,6 +17,9 @@
 		"ls_storage_inputfolder_connectionString": {
 			"value": ""
 		},
+		"AzureBlobStorage3_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://adfstorage0123.dfs.core.windows.net/"
 		},
