@@ -72,7 +72,13 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DS_Generic_Folder",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										}
+									}
 								},
 								"logStorageSettings": {
 									"linkedServiceName": {
