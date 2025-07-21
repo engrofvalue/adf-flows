@@ -150,15 +150,7 @@
 									"writeBehavior": "insert",
 									"sqlWriterUseTableLock": false
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
@@ -168,22 +160,6 @@
 										"FolderName": "input",
 										"FileName": {
 											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "DynamicLoad_TargetTable",
-									"type": "DatasetReference",
-									"parameters": {
-										"tablename": {
-											"value": "@activity('Lookup Table schema').output.firstRow.table_name",
-											"type": "Expression"
-										},
-										"schemaname": {
-											"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
 											"type": "Expression"
 										}
 									}
