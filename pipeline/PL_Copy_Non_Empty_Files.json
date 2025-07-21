@@ -22,7 +22,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"foldername": {
-								"value": "@pipeline().parameters.folderName",
+								"value": "input",
 								"type": "Expression"
 							}
 						}
@@ -121,7 +121,7 @@
 							}
 						},
 						{
-							"name": "If count > 0",
+							"name": "If count is greater than 0",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -210,11 +210,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"folderName": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"filename": {
 				"type": "String"

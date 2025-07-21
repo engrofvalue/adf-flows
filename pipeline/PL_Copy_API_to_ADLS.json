@@ -1,5 +1,5 @@
 {
-	"name": "PL_API_to_ADLS",
+	"name": "PL_Copy_API_to_ADLS",
 	"properties": {
 		"description": "This pipeline copies data from rest api and unzips it before stori in adls.",
 		"activities": [
