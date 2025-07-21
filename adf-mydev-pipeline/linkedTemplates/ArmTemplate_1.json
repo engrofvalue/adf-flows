@@ -13,313 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/PL_Copy_Csv_To_Sql_Db_Dynamic')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This pipeline dynamically loads the csv file to their corresponding azure sql db tables\n",
-				"activities": [
-					{
-						"name": "Get files metadata",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_Generic_Folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"FolderName": "input"
-								}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "For each file",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Get files metadata",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Get files metadata').output.childItems",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Lookup Table schema",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "@concat(\n  'SELECT TOP 1 schema_name, table_name FROM schema_table WHERE LOWER(table_name) = LOWER(''', \n  replace(item().name, '.csv', ''), \n  ''')'\n)\n",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"dataset": {
-											"referenceName": "DS_Table_Schema",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "Error Lookup",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Full Table Name",
-											"dependencyConditions": [
-												"Failed"
-											]
-										},
-										{
-											"activity": "Copy csv data to sql db",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "Lookup Error",
-										"value": {
-											"value": "@concat(\n  'SELECT TOP 1 ''['' + schema_name + ''].['' + table_name + '']'' AS full_table_name FROM schema_table WHERE LOWER(table_name) = LOWER(''', \n  replace(item().name, '.csv', ''), \n  ''')'\n)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Copy csv data to sql db",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Full Table Name",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "DelimitedTextSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "DelimitedTextReadSettings"
-											}
-										},
-										"sink": {
-											"type": "AzureSqlSink",
-											"writeBehavior": "insert",
-											"sqlWriterUseTableLock": false
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "DS_Generic_CSV_File",
-											"type": "DatasetReference",
-											"parameters": {
-												"FolderName": "input",
-												"FileName": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "DS_Generic_Sql_DB",
-											"type": "DatasetReference",
-											"parameters": {
-												"SchemaName": {
-													"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
-													"type": "Expression"
-												},
-												"TableName": {
-													"value": "@activity('Lookup Table schema').output.firstRow.table_name",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Full Table Name",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Lookup Table schema",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "passed_tablename",
-										"value": {
-											"value": "@concat(activity('Lookup Table schema').output.firstRow.schema_name, '.', activity('Lookup Table schema').output.firstRow.table_name)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Schema Name",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Lookup Table schema",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "Schema Name",
-										"value": {
-											"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Table Name",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Lookup Table schema",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "Table Name",
-										"value": {
-											"value": "@activity('Lookup Table schema').output.firstRow.table_name",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"LookUpValue": {
-						"type": "String"
-					},
-					"foreach_tablename": {
-						"type": "String"
-					},
-					"DebugSQL": {
-						"type": "String"
-					},
-					"Lookup Error": {
-						"type": "String"
-					},
-					"passed_tablename": {
-						"type": "String"
-					},
-					"schemaName": {
-						"type": "String"
-					},
-					"tableName": {
-						"type": "String"
-					},
-					"Schema Name": {
-						"type": "String"
-					},
-					"Table Name": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/PL_Copy_Non_Empty_Files')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1486,6 +1179,52 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_SCD_1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DF_SCD_1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_SCD_1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CsvSource": {},
+									"EmployeeTable": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_SCD_1')]"
+			]
 		}
 	]
 }
