@@ -1,5 +1,5 @@
 {
-	"name": "delete_based_on_size",
+	"name": "PL_Delete_Files_On_Size",
 	"properties": {
 		"activities": [
 			{
@@ -71,11 +71,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText3",
+									"referenceName": "DS_Generic_CSV_File",
 									"type": "DatasetReference",
 									"parameters": {
-										"filename": {
-											"value": "@item().Name",
+										"FolderName": "input",
+										"FileName": {
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -85,8 +86,7 @@
 									"size"
 								],
 								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
+									"type": "AzureBlobFSReadSettings",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -113,7 +113,7 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Delete1",
+										"name": "Delete files",
 										"type": "Delete",
 										"dependsOn": [],
 										"policy": {
@@ -126,10 +126,11 @@
 										"userProperties": [],
 										"typeProperties": {
 											"dataset": {
-												"referenceName": "DelimitedText3",
+												"referenceName": "DS_Generic_CSV_File",
 												"type": "DatasetReference",
 												"parameters": {
-													"filename": {
+													"FolderName": "input",
+													"FileName": {
 														"value": "@activity('Get Metadata2').output.itemName",
 														"type": "Expression"
 													}
@@ -137,14 +138,17 @@
 											},
 											"logStorageSettings": {
 												"linkedServiceName": {
-													"referenceName": "AzureBlobStorage2",
+													"referenceName": "LS_ADLS",
 													"type": "LinkedServiceReference"
 												},
-												"path": "output"
+												"path": {
+													"value": "@concat('/logs/',formatDateTime(utcNow(), 'yyyy'), '/', \n        toUpper(formatDateTime(utcNow(), 'MMM')), '/', \n        formatDateTime(utcNow(), 'dd'))",
+													"type": "Expression"
+												}
 											},
 											"enableLogging": true,
 											"storeSettings": {
-												"type": "AzureBlobStorageReadSettings",
+												"type": "AzureBlobFSReadSettings",
 												"recursive": true,
 												"enablePartitionDiscovery": false
 											}
