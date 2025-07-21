@@ -8,16 +8,19 @@
 		"AzureBlobStorage2_connectionString": {
 			"value": ""
 		},
+		"AzureBlobStorage3_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
 		"AzureSqlDatabase2_password": {
 			"value": ""
 		},
-		"ls_storage_inputfolder_connectionString": {
+		"LS_ADLS_accountKey": {
 			"value": ""
 		},
-		"AzureBlobStorage3_connectionString": {
+		"ls_storage_inputfolder_connectionString": {
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
@@ -34,6 +37,9 @@
 		},
 		"HttpServer1_properties_typeProperties_url": {
 			"value": "https://drive.usercontent.google.com/u/0/uc?id=1bmmtkc5NLZQ4iU6Qz_7di-juuxA2kT1t&export=download"
+		},
+		"LS_ADLS_properties_typeProperties_url": {
+			"value": "https://adfstorage0123.dfs.core.windows.net/"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://reqres.in/api/users"
