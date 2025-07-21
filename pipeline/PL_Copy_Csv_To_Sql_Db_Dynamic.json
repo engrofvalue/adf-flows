@@ -150,7 +150,15 @@
 									"writeBehavior": "insert",
 									"sqlWriterUseTableLock": false
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -160,6 +168,22 @@
 										"FolderName": "input",
 										"FileName": {
 											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_Generic_Sql_DB",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@activity('Lookup Table schema').output.firstRow.table_name",
 											"type": "Expression"
 										}
 									}
@@ -189,6 +213,54 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Schema Name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Lookup Table schema",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Schema Name",
+								"value": {
+									"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Table Name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Lookup Table schema",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Table Name",
+								"value": {
+									"value": "@activity('Lookup Table schema').output.firstRow.table_name",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -214,6 +286,12 @@
 				"type": "String"
 			},
 			"tableName": {
+				"type": "String"
+			},
+			"Schema Name": {
+				"type": "String"
+			},
+			"Table Name": {
 				"type": "String"
 			}
 		},
