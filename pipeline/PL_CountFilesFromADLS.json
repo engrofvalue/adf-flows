@@ -1,0 +1,79 @@
+{
+	"name": "PL_CountFilesFromADLS",
+	"properties": {
+		"description": "This pipeline returns the number of files in the given adls folder.",
+		"activities": [
+			{
+				"name": "Get Storage Files Metadata",
+				"description": "This activity gets the metadata for the storage files in Azure Data Lake Storage",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_GenericCSVFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"foldername": {
+								"value": "@pipeline().parameters.folderName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "fileCount variable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Storage Files Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileCount",
+					"value": {
+						"value": "@length(activity('Get Storage Files Metadata').output.childItems)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"folderName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"fileCount": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
