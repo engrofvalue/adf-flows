@@ -2,7 +2,7 @@
 	"name": "DS_binary_input",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "HttpServer1",
+			"referenceName": "LS_Http",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],

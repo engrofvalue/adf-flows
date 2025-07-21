@@ -1,5 +1,5 @@
 {
-	"name": "PL_CountFilesFromADLS",
+	"name": "PL_Count_Files_From_ADLS",
 	"properties": {
 		"description": "This pipeline returns the number of files in the given adls folder.",
 		"activities": [

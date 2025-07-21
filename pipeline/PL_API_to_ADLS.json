@@ -1,10 +1,10 @@
 {
-	"name": "api_to_adls",
+	"name": "PL_API_to_ADLS",
 	"properties": {
-		"description": "This pipeline copies data from api, zip and unzip it and store in adls.",
+		"description": "This pipeline copies data from rest api and unzips it before stori in adls.",
 		"activities": [
 			{
-				"name": "Copy API to adls",
+				"name": "Copi Rest API",
 				"description": "Copies zipped file, unzips it and store in adls",
 				"type": "Copy",
 				"dependsOn": [],
@@ -34,7 +34,7 @@
 					"sink": {
 						"type": "BinarySink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobFSWriteSettings"
 						}
 					},
 					"enableStaging": false
