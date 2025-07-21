@@ -18,13 +18,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_Generic_CSV_File",
+						"referenceName": "DS_Generic_Folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"foldername": {
-								"value": "input",
-								"type": "Expression"
-							}
+							"FolderName": "input"
 						}
 					},
 					"fieldList": [
@@ -111,10 +108,10 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DS_Generic_CSV_File",
+									"referenceName": "DS_Generic_Folder",
 									"type": "DatasetReference",
 									"parameters": {
-										"foldername": "input"
+										"FolderName": "input"
 									}
 								},
 								"firstRowOnly": false
@@ -189,10 +186,10 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "DS_Generic_CSV_File",
+												"referenceName": "DS_Generic_Folder",
 												"type": "DatasetReference",
 												"parameters": {
-													"foldername": "input"
+													"FolderName": "input"
 												}
 											}
 										],

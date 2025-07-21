@@ -4,7 +4,7 @@
 		"description": "This pipeline gets the latest pipeline",
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "Get input metadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -34,11 +34,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For each file",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Get input metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -47,7 +47,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('Get input metadata').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -66,22 +66,15 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText2",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@item().Name",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "DS_Generic_Folder",
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"itemName",
 									"lastModified"
 								],
 								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
+									"type": "AzureBlobFSReadSettings",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -159,7 +152,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "ForEach1",
+						"activity": "For each file",
 						"dependencyConditions": [
 							"Succeeded"
 						]

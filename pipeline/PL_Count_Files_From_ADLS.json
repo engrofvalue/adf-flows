@@ -18,10 +18,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_Generic_CSV_File",
+						"referenceName": "DS_Generic_Folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"foldername": {
+							"FolderName": {
 								"value": "@pipeline().parameters.folderName",
 								"type": "Expression"
 							}
