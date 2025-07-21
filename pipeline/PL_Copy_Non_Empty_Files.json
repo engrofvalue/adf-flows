@@ -21,7 +21,10 @@
 						"referenceName": "DS_Generic_Folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"FolderName": "input"
+							"FolderName": {
+								"value": "@pipeline().parameters.FolderName",
+								"type": "Expression"
+							}
 						}
 					},
 					"fieldList": [
@@ -37,7 +40,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For each file",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -108,14 +111,20 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DS_Generic_CSV_File",
-									"type": "DatasetReference"
+									"referenceName": "DS_Generic_Folder",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										}
+									}
 								},
 								"firstRowOnly": false
 							}
 						},
 						{
-							"name": "If count is greater than 0",
+							"name": "If row count is greater than 0",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -186,7 +195,10 @@
 												"referenceName": "DS_Generic_Folder",
 												"type": "DatasetReference",
 												"parameters": {
-													"FolderName": "input"
+													"FolderName": {
+														"value": "@pipeline().parameters.FolderName",
+														"type": "Expression"
+													}
 												}
 											}
 										],
@@ -204,6 +216,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"FolderName": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"filename": {
 				"type": "String"
