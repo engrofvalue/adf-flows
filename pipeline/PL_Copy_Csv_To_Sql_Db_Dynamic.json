@@ -1,10 +1,10 @@
 {
-	"name": "dynamic_csv_to_sqldb",
+	"name": "PL_Copy_Csv_To_Sql_Db_Dynamic",
 	"properties": {
 		"description": "This pipeline dynamically loads the csv file to their corresponding azure sql db tables\n",
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "Get files metadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -17,8 +17,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_raw_dir",
-						"type": "DatasetReference"
+						"referenceName": "DS_Generic_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": "input"
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -34,11 +37,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For each file",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Get files metadata",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -47,13 +50,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('Get files metadata').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup1",
+							"name": "Lookup Table schema",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -75,7 +78,7 @@
 									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "Lookup_tableschema",
+									"referenceName": "DS_Table_Schema",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": true
@@ -86,13 +89,13 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Passed_TableName",
+									"activity": "Full Table Name",
 									"dependencyConditions": [
 										"Failed"
 									]
 								},
 								{
-									"activity": "Copy data1",
+									"activity": "Copy csv data to sql db",
 									"dependencyConditions": [
 										"Failed"
 									]
@@ -112,11 +115,11 @@
 							}
 						},
 						{
-							"name": "Copy data1",
+							"name": "Copy csv data to sql db",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Passed_TableName",
+									"activity": "Full Table Name",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -159,10 +162,11 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "RawFiles",
+									"referenceName": "DS_Generic_CSV_File",
 									"type": "DatasetReference",
 									"parameters": {
-										"filename": {
+										"FolderName": "input",
+										"FileName": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
@@ -175,11 +179,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tablename": {
-											"value": "@activity('Lookup1').output.firstRow.table_name",
+											"value": "@activity('Lookup Table schema').output.firstRow.table_name",
 											"type": "Expression"
 										},
 										"schemaname": {
-											"value": "@activity('Lookup1').output.firstRow.schema_name",
+											"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
 											"type": "Expression"
 										}
 									}
@@ -187,11 +191,11 @@
 							]
 						},
 						{
-							"name": "Passed_TableName",
+							"name": "Full Table Name",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup1",
+									"activity": "Lookup Table schema",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -205,17 +209,17 @@
 							"typeProperties": {
 								"variableName": "passed_tablename",
 								"value": {
-									"value": "@concat(activity('Lookup1').output.firstRow.schema_name, '.', activity('Lookup1').output.firstRow.table_name)",
+									"value": "@concat(activity('Lookup Table schema').output.firstRow.schema_name, '.', activity('Lookup Table schema').output.firstRow.table_name)",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "schemaName",
+							"name": "Schema Name",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup1",
+									"activity": "Lookup Table schema",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -229,17 +233,17 @@
 							"typeProperties": {
 								"variableName": "schemaName",
 								"value": {
-									"value": "@activity('Lookup1').output.firstRow.schema_name",
+									"value": "@activity('Lookup Table schema').output.firstRow.schema_name",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "TableName",
+							"name": "Table Name",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup1",
+									"activity": "Lookup Table schema",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -253,7 +257,7 @@
 							"typeProperties": {
 								"variableName": "tableName",
 								"value": {
-									"value": "@activity('Lookup1').output.firstRow.table_name",
+									"value": "@activity('Lookup Table schema').output.firstRow.table_name",
 									"type": "Expression"
 								}
 							}
