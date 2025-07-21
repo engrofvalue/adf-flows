@@ -8,14 +8,17 @@
 		"AzureBlobStorage2_connectionString": {
 			"value": ""
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
 		"AzureSqlDatabase2_password": {
 			"value": ""
 		},
 		"ls_storage_inputfolder_connectionString": {
 			"value": ""
 		},
-		"AzureDataLakeStorage1_accountKey": {
-			"value": ""
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://adfstorage0123.dfs.core.windows.net/"
 		},
 		"AzureSqlDatabase2_properties_typeProperties_server": {
 			"value": "db-server-0630.database.windows.net"
@@ -31,9 +34,6 @@
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://reqres.in/api/users"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"value": "https://adfstorage0123.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
