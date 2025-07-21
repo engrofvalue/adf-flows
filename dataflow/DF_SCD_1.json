@@ -1,0 +1,69 @@
+{
+	"name": "DF_SCD_1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD",
+						"type": "DatasetReference"
+					},
+					"name": "CsvSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sql_Db_Az",
+						"type": "DatasetReference"
+					},
+					"name": "EmployeeTable"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          employee_id as integer,",
+				"          first_name as string,",
+				"          hire_date as date,",
+				"          job_title as string,",
+				"          salary as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CsvSource",
+				"CsvSource alterRow(upsertIf(1==1)) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          employee_id as integer,",
+				"          first_name as string,",
+				"          hire_date as date,",
+				"          job_title as string,",
+				"          salary as decimal(10,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['employee_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          employee_id,",
+				"          first_name,",
+				"          hire_date,",
+				"          job_title,",
+				"          salary",
+				"     )) ~> EmployeeTable"
+			]
+		}
+	}
+}

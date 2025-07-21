@@ -1,0 +1,40 @@
+{
+	"name": "DS_Sql_Db_Az",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql_Db_Az",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "employee_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "first_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "hire_date",
+				"type": "date"
+			},
+			{
+				"name": "job_title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "salary",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employees"
+		}
+	}
+}
