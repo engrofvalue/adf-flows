@@ -19,7 +19,13 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DS_Generic_CSV_File",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"foldername": {
+								"value": "@pipeline().parameters.folderName",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -53,7 +59,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Set variable1",
+							"name": "set filename",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
@@ -70,11 +76,11 @@
 							}
 						},
 						{
-							"name": "Lookup1",
+							"name": "File name lookup",
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "set filename",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -92,7 +98,7 @@
 								"source": {
 									"type": "DelimitedTextSource",
 									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
+										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
 										"wildcardFileName": {
 											"value": "@variables('filename')",
@@ -105,18 +111,21 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DS_input_dir",
-									"type": "DatasetReference"
+									"referenceName": "DS_Generic_CSV_File",
+									"type": "DatasetReference",
+									"parameters": {
+										"foldername": "input"
+									}
 								},
 								"firstRowOnly": false
 							}
 						},
 						{
-							"name": "If Condition1",
+							"name": "If count > 0",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Lookup1",
+									"activity": "File name lookup",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -125,12 +134,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(activity('Lookup1').output.count,0)",
+									"value": "@greater(activity('File name lookup').output.count,0)",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Copy data1",
+										"name": "Copy files",
 										"type": "Copy",
 										"dependsOn": [],
 										"policy": {
@@ -145,7 +154,7 @@
 											"source": {
 												"type": "DelimitedTextSource",
 												"storeSettings": {
-													"type": "AzureBlobStorageReadSettings",
+													"type": "AzureBlobFSReadSettings",
 													"recursive": true,
 													"wildcardFileName": {
 														"value": "@variables('filename')",
@@ -160,7 +169,7 @@
 											"sink": {
 												"type": "DelimitedTextSink",
 												"storeSettings": {
-													"type": "AzureBlobStorageWriteSettings"
+													"type": "AzureBlobFSWriteSettings"
 												},
 												"formatSettings": {
 													"type": "DelimitedTextWriteSettings",
@@ -180,8 +189,11 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "DS_input_dir",
-												"type": "DatasetReference"
+												"referenceName": "DS_Generic_CSV_File",
+												"type": "DatasetReference",
+												"parameters": {
+													"foldername": "input"
+												}
 											}
 										],
 										"outputs": [
