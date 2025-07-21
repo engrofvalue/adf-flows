@@ -1,11 +1,11 @@
 {
-	"name": "rest_to_adls",
+	"name": "PL_Copy_Rest_To_ADLS",
 	"properties": {
 		"description": "Copy data from rest and create/load csv file in the azure blob storage",
 		"activities": [
 			{
 				"name": "Copy rest to adls",
-				"description": "Copy data from rest and create/load csv file in the azure blob storage",
+				"description": "Copy rest data to adls",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -50,8 +50,8 @@
 									"path": "['id']"
 								},
 								"sink": {
-									"name": "id",
-									"type": "Int64"
+									"type": "Int64",
+									"ordinal": 1
 								}
 							},
 							{
@@ -59,8 +59,8 @@
 									"path": "['email']"
 								},
 								"sink": {
-									"name": "email",
-									"type": "String"
+									"type": "String",
+									"ordinal": 2
 								}
 							},
 							{
@@ -68,8 +68,8 @@
 									"path": "['first_name']"
 								},
 								"sink": {
-									"name": "first_name",
-									"type": "String"
+									"type": "String",
+									"ordinal": 3
 								}
 							},
 							{
@@ -77,8 +77,8 @@
 									"path": "['last_name']"
 								},
 								"sink": {
-									"name": "last_name",
-									"type": "String"
+									"type": "String",
+									"ordinal": 4
 								}
 							},
 							{
@@ -86,8 +86,8 @@
 									"path": "['avatar']"
 								},
 								"sink": {
-									"name": "avatar",
-									"type": "String"
+									"type": "String",
+									"ordinal": 5
 								}
 							}
 						],
@@ -96,14 +96,17 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_Rest_Resource",
+						"referenceName": "DS_Rest",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_input_dir",
-						"type": "DatasetReference"
+						"referenceName": "DS_Generic_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": "input"
+						}
 					}
 				]
 			}
