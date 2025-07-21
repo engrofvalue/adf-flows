@@ -11,6 +11,9 @@
 		"LS_Azure_Sql_DB_password": {
 			"value": ""
 		},
+		"LS_Sql_Db_Az_password": {
+			"value": ""
+		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"value": "https://adfstorage0123.dfs.core.windows.net/"
 		},
@@ -28,6 +31,15 @@
 		},
 		"LS_Rest_properties_typeProperties_url": {
 			"value": "https://reqres.in/api/users"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_server": {
+			"value": "db-server-0630.database.windows.net"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_database": {
+			"value": "az_db"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_userName": {
+			"value": "adminuser"
 		},
 		"containerUri": {
 			"value": ""

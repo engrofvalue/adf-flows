@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LS_Azure_Sql_DB'"
 		},
+		"LS_Sql_Db_Az_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_Sql_Db_Az'"
+		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstorage0123.dfs.core.windows.net/"
@@ -38,6 +42,18 @@
 		"LS_Rest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://reqres.in/api/users"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "db-server-0630.database.windows.net"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "az_db"
+		},
+		"LS_Sql_Db_Az_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminuser"
 		},
 		"containerUri": {
 			"type": "string",
@@ -72,6 +88,9 @@
 					"LS_Azure_Sql_DB_password": {
 						"value": "[parameters('LS_Azure_Sql_DB_password')]"
 					},
+					"LS_Sql_Db_Az_password": {
+						"value": "[parameters('LS_Sql_Db_Az_password')]"
+					},
 					"LS_ADLS_properties_typeProperties_url": {
 						"value": "[parameters('LS_ADLS_properties_typeProperties_url')]"
 					},
@@ -89,6 +108,15 @@
 					},
 					"LS_Rest_properties_typeProperties_url": {
 						"value": "[parameters('LS_Rest_properties_typeProperties_url')]"
+					},
+					"LS_Sql_Db_Az_properties_typeProperties_server": {
+						"value": "[parameters('LS_Sql_Db_Az_properties_typeProperties_server')]"
+					},
+					"LS_Sql_Db_Az_properties_typeProperties_database": {
+						"value": "[parameters('LS_Sql_Db_Az_properties_typeProperties_database')]"
+					},
+					"LS_Sql_Db_Az_properties_typeProperties_userName": {
+						"value": "[parameters('LS_Sql_Db_Az_properties_typeProperties_userName')]"
 					}
 				}
 			},
