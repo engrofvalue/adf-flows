@@ -20,6 +20,9 @@
 		"LS_ADLS_accountKey": {
 			"value": ""
 		},
+		"LS_Azure_Sql_DB_password": {
+			"value": ""
+		},
 		"ls_storage_inputfolder_connectionString": {
 			"value": ""
 		},
@@ -35,11 +38,26 @@
 		"AzureSqlDatabase2_properties_typeProperties_userName": {
 			"value": "adminuser"
 		},
-		"HttpServer1_properties_typeProperties_url": {
-			"value": "https://drive.usercontent.google.com/u/0/uc?id=1bmmtkc5NLZQ4iU6Qz_7di-juuxA2kT1t&export=download"
-		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"value": "https://adfstorage0123.dfs.core.windows.net/"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_server": {
+			"value": "db-server-0630.database.windows.net"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_database": {
+			"value": "SQL_DB1"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_userName": {
+			"value": "adminuser"
+		},
+		"LS_Http_properties_typeProperties_url": {
+			"value": "https://drive.usercontent.google.com/u/0/uc?id=1bmmtkc5NLZQ4iU6Qz_7di-juuxA2kT1t&export=download"
+		},
+		"LS_Rest_properties_typeProperties_url": {
+			"value": "https://reqres.in/api/users"
+		},
+		"LS_Rest_API_properties_typeProperties_url": {
+			"value": "https://reqres.in/api/users"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://reqres.in/api/users"

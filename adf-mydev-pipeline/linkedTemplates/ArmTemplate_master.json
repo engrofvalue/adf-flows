@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_ADLS'"
 		},
+		"LS_Azure_Sql_DB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_Azure_Sql_DB'"
+		},
 		"ls_storage_inputfolder_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_storage_inputfolder'"
@@ -47,13 +51,33 @@
 			"type": "string",
 			"defaultValue": "adminuser"
 		},
-		"HttpServer1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://drive.usercontent.google.com/u/0/uc?id=1bmmtkc5NLZQ4iU6Qz_7di-juuxA2kT1t&export=download"
-		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstorage0123.dfs.core.windows.net/"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "db-server-0630.database.windows.net"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "SQL_DB1"
+		},
+		"LS_Azure_Sql_DB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminuser"
+		},
+		"LS_Http_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://drive.usercontent.google.com/u/0/uc?id=1bmmtkc5NLZQ4iU6Qz_7di-juuxA2kT1t&export=download"
+		},
+		"LS_Rest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
+		},
+		"LS_Rest_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
@@ -101,6 +125,9 @@
 					"LS_ADLS_accountKey": {
 						"value": "[parameters('LS_ADLS_accountKey')]"
 					},
+					"LS_Azure_Sql_DB_password": {
+						"value": "[parameters('LS_Azure_Sql_DB_password')]"
+					},
 					"ls_storage_inputfolder_connectionString": {
 						"value": "[parameters('ls_storage_inputfolder_connectionString')]"
 					},
@@ -116,11 +143,26 @@
 					"AzureSqlDatabase2_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSqlDatabase2_properties_typeProperties_userName')]"
 					},
-					"HttpServer1_properties_typeProperties_url": {
-						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
-					},
 					"LS_ADLS_properties_typeProperties_url": {
 						"value": "[parameters('LS_ADLS_properties_typeProperties_url')]"
+					},
+					"LS_Azure_Sql_DB_properties_typeProperties_server": {
+						"value": "[parameters('LS_Azure_Sql_DB_properties_typeProperties_server')]"
+					},
+					"LS_Azure_Sql_DB_properties_typeProperties_database": {
+						"value": "[parameters('LS_Azure_Sql_DB_properties_typeProperties_database')]"
+					},
+					"LS_Azure_Sql_DB_properties_typeProperties_userName": {
+						"value": "[parameters('LS_Azure_Sql_DB_properties_typeProperties_userName')]"
+					},
+					"LS_Http_properties_typeProperties_url": {
+						"value": "[parameters('LS_Http_properties_typeProperties_url')]"
+					},
+					"LS_Rest_properties_typeProperties_url": {
+						"value": "[parameters('LS_Rest_properties_typeProperties_url')]"
+					},
+					"LS_Rest_API_properties_typeProperties_url": {
+						"value": "[parameters('LS_Rest_API_properties_typeProperties_url')]"
 					},
 					"RestService1_properties_typeProperties_url": {
 						"value": "[parameters('RestService1_properties_typeProperties_url')]"
