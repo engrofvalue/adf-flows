@@ -4,7 +4,7 @@
 		"description": "This pipeline deletes files older than 7 days in adls",
 		"activities": [
 			{
-				"name": "Get input folder metadata",
+				"name": "Get folder metadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -43,7 +43,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get input folder metadata",
+						"activity": "Get folder metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
