@@ -1,0 +1,57 @@
+{
+	"name": "DS_SCD2_Tgt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "suppliers_tgt.csv",
+				"folderPath": "2025/JUL/22/csv",
+				"fileSystem": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "supplier_id",
+				"type": "String"
+			},
+			{
+				"name": "supplier_name",
+				"type": "String"
+			},
+			{
+				"name": "contact_name",
+				"type": "String"
+			},
+			{
+				"name": "phone",
+				"type": "String"
+			},
+			{
+				"name": "country",
+				"type": "String"
+			},
+			{
+				"name": "active",
+				"type": "String"
+			},
+			{
+				"name": "start_date",
+				"type": "String"
+			},
+			{
+				"name": "end_date",
+				"type": "String"
+			}
+		]
+	}
+}

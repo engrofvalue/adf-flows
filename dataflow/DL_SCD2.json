@@ -1,13 +1,187 @@
 {
-	"name": "dataflow1",
+	"name": "DL_SCD2",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Src",
+						"type": "DatasetReference"
+					},
+					"name": "CsvSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Tgt",
+						"type": "DatasetReference"
+					},
+					"name": "DbTarget"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Tgt",
+						"type": "DatasetReference"
+					},
+					"name": "targetfileinsert"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Tgt",
+						"type": "DatasetReference"
+					},
+					"name": "targetfileupdate"
+				}
+			],
+			"transformations": [
+				{
+					"name": "srchash"
+				},
+				{
+					"name": "tgthash"
+				},
+				{
+					"name": "notexistingrow"
+				},
+				{
+					"name": "isactive"
+				},
+				{
+					"name": "startdatenew"
+				},
+				{
+					"name": "enddatenew"
+				},
+				{
+					"name": "select"
+				},
+				{
+					"name": "existingsupplierid"
+				},
+				{
+					"name": "notexisting"
+				},
+				{
+					"name": "isinactive"
+				},
+				{
+					"name": "startdateupdate"
+				},
+				{
+					"name": "enddateupdate"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "selectupdate"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          supplier_id as string,",
+				"          supplier_name as string,",
+				"          contact_name as string,",
+				"          phone as string,",
+				"          country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CsvSource",
+				"source(output(",
+				"          supplier_id as string,",
+				"          supplier_name as string,",
+				"          contact_name as string,",
+				"          phone as string,",
+				"          country as string,",
+				"          active as string,",
+				"          start_date as string,",
+				"          end_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DbTarget",
+				"CsvSource derive(hash = md5(supplier_id,supplier_name,contact_name,phone,country)) ~> srchash",
+				"DbTarget derive(hash = md5(supplier_id,supplier_name,contact_name,phone,country)) ~> tgthash",
+				"srchash, tgthash exists(srchash@hash == tgthash@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> notexistingrow",
+				"notexistingrow derive(is_active = 1) ~> isactive",
+				"isactive derive(start_date = currentDate()) ~> startdatenew",
+				"startdatenew derive(end_date = toDate('9999-12-31', 'yyyy-MM-dd')) ~> enddatenew",
+				"enddatenew select(mapColumn(",
+				"          supplier_id,",
+				"          supplier_name,",
+				"          contact_name,",
+				"          phone,",
+				"          country,",
+				"          hash,",
+				"          start_date,",
+				"          end_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select",
+				"tgthash, srchash exists(DbTarget@supplier_id == CsvSource@supplier_id,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> existingsupplierid",
+				"existingsupplierid, srchash exists(tgthash@hash == srchash@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> notexisting",
+				"notexisting derive(is_active = 0) ~> isinactive",
+				"isinactive derive(start_date = currentDate()) ~> startdateupdate",
+				"startdateupdate derive(end_date = currentDate()-1) ~> enddateupdate",
+				"isinactive alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          supplier_id,",
+				"          supplier_name,",
+				"          contact_name,",
+				"          phone,",
+				"          country,",
+				"          active,",
+				"          start_date,",
+				"          end_date,",
+				"          is_active",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectupdate",
+				"select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          supplier_id as string,",
+				"          supplier_name as string,",
+				"          contact_name as string,",
+				"          phone as string,",
+				"          country as string,",
+				"          active as string,",
+				"          start_date as string,",
+				"          end_date as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> targetfileinsert",
+				"selectupdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          supplier_id as string,",
+				"          supplier_name as string,",
+				"          contact_name as string,",
+				"          phone as string,",
+				"          country as string,",
+				"          active as string,",
+				"          start_date as string,",
+				"          end_date as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> targetfileupdate"
 			]
 		}
 	}
