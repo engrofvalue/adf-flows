@@ -11,8 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "suppliers_v2.csv",
-				"folderPath": "2025/JUL/22/csv",
-				"fileSystem": "input"
+				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

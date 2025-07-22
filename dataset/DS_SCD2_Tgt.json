@@ -11,8 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "suppliers_tgt.csv",
-				"folderPath": "2025/JUL/22/csv",
-				"fileSystem": "output"
+				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
