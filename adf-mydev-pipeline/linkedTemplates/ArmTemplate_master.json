@@ -29,7 +29,7 @@
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "SQL_DB1"
+			"defaultValue": "az_db"
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_userName": {
 			"type": "string",

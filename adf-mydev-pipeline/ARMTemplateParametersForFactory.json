@@ -21,7 +21,7 @@
 			"value": "db-server-0630.database.windows.net"
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_database": {
-			"value": "SQL_DB1"
+			"value": "az_db"
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_userName": {
 			"value": "adminuser"

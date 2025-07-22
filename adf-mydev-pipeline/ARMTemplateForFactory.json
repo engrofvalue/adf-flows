@@ -29,7 +29,7 @@
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "SQL_DB1"
+			"defaultValue": "az_db"
 		},
 		"LS_Azure_Sql_DB_properties_typeProperties_userName": {
 			"type": "string",
@@ -575,6 +575,102 @@
 				"[concat(variables('factoryId'), '/datasets/DS_Generic_Folder')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Table_Schema')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Generic_CSV_File')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Generic_Sql_DB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Copy_Csv_To_Sql_Db_Param')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy csv data to sql db",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Raw_Folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileName": {
+										"value": "@pipeline().parameters.FileName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Generic_Sql_DB",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": {
+										"value": "@pipeline().parameters.SchemaName",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					},
+					"SchemaName": {
+						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Raw_Folder')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Generic_Sql_DB')]"
 			]
 		},
@@ -1627,6 +1723,54 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_SCD_2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DL_SCD2",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DL_SCD2",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CsvSource": {},
+									"DbTarget": {},
+									"targetfileinsert": {},
+									"targetfileupdate": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DL_SCD2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_Validate_Schema')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1648,7 +1792,9 @@
 							"dataset": {
 								"referenceName": "DS_Raw_Folder",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"FileName": "emp1.csv"
+								}
 							},
 							"fieldList": [
 								"structure"
@@ -1897,12 +2043,20 @@
 					"referenceName": "LS_ADLS",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "emp1.csv",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",
@@ -1975,6 +2129,118 @@
 					},
 					{
 						"name": "salary",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SCD2_Src')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "suppliers_v2.csv",
+						"folderPath": "2025/JUL/22/csv",
+						"fileSystem": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "supplier_id",
+						"type": "String"
+					},
+					{
+						"name": "supplier_name",
+						"type": "String"
+					},
+					{
+						"name": "contact_name",
+						"type": "String"
+					},
+					{
+						"name": "phone",
+						"type": "String"
+					},
+					{
+						"name": "country",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SCD2_Tgt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "suppliers_tgt.csv",
+						"folderPath": "2025/JUL/22/csv",
+						"fileSystem": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "supplier_id",
+						"type": "String"
+					},
+					{
+						"name": "supplier_name",
+						"type": "String"
+					},
+					{
+						"name": "contact_name",
+						"type": "String"
+					},
+					{
+						"name": "phone",
+						"type": "String"
+					},
+					{
+						"name": "country",
+						"type": "String"
+					},
+					{
+						"name": "active",
+						"type": "String"
+					},
+					{
+						"name": "start_date",
+						"type": "String"
+					},
+					{
+						"name": "end_date",
 						"type": "String"
 					}
 				]
@@ -2321,6 +2587,200 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_SCD')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Sql_Db_Az')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DL_SCD2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_SCD2_Src",
+								"type": "DatasetReference"
+							},
+							"name": "CsvSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SCD2_Tgt",
+								"type": "DatasetReference"
+							},
+							"name": "DbTarget"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_SCD2_Tgt",
+								"type": "DatasetReference"
+							},
+							"name": "targetfileinsert"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SCD2_Tgt",
+								"type": "DatasetReference"
+							},
+							"name": "targetfileupdate"
+						}
+					],
+					"transformations": [
+						{
+							"name": "srchash"
+						},
+						{
+							"name": "tgthash"
+						},
+						{
+							"name": "notexistingrow"
+						},
+						{
+							"name": "isactive"
+						},
+						{
+							"name": "startdatenew"
+						},
+						{
+							"name": "enddatenew"
+						},
+						{
+							"name": "select"
+						},
+						{
+							"name": "existingsupplierid"
+						},
+						{
+							"name": "notexisting"
+						},
+						{
+							"name": "isinactive"
+						},
+						{
+							"name": "startdateupdate"
+						},
+						{
+							"name": "enddateupdate"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "selectupdate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          supplier_id as string,",
+						"          supplier_name as string,",
+						"          contact_name as string,",
+						"          phone as string,",
+						"          country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CsvSource",
+						"source(output(",
+						"          supplier_id as string,",
+						"          supplier_name as string,",
+						"          contact_name as string,",
+						"          phone as string,",
+						"          country as string,",
+						"          active as string,",
+						"          start_date as string,",
+						"          end_date as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> DbTarget",
+						"CsvSource derive(hash = md5(supplier_id,supplier_name,contact_name,phone,country)) ~> srchash",
+						"DbTarget derive(hash = md5(supplier_id,supplier_name,contact_name,phone,country)) ~> tgthash",
+						"srchash, tgthash exists(srchash@hash == tgthash@hash,",
+						"     negate:true,",
+						"     broadcast: 'auto')~> notexistingrow",
+						"notexistingrow derive(is_active = 1) ~> isactive",
+						"isactive derive(start_date = currentDate()) ~> startdatenew",
+						"startdatenew derive(end_date = toDate('9999-12-31', 'yyyy-MM-dd')) ~> enddatenew",
+						"enddatenew select(mapColumn(",
+						"          supplier_id,",
+						"          supplier_name,",
+						"          contact_name,",
+						"          phone,",
+						"          country,",
+						"          hash,",
+						"          start_date,",
+						"          end_date",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select",
+						"tgthash, srchash exists(DbTarget@supplier_id == CsvSource@supplier_id,",
+						"     negate:false,",
+						"     broadcast: 'auto')~> existingsupplierid",
+						"existingsupplierid, srchash exists(tgthash@hash == srchash@hash,",
+						"     negate:true,",
+						"     broadcast: 'auto')~> notexisting",
+						"notexisting derive(is_active = 0) ~> isinactive",
+						"isinactive derive(start_date = currentDate()) ~> startdateupdate",
+						"startdateupdate derive(end_date = currentDate()-1) ~> enddateupdate",
+						"isinactive alterRow(updateIf(true())) ~> alterRow1",
+						"alterRow1 select(mapColumn(",
+						"          supplier_id,",
+						"          supplier_name,",
+						"          contact_name,",
+						"          phone,",
+						"          country,",
+						"          active,",
+						"          start_date,",
+						"          end_date,",
+						"          is_active",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectupdate",
+						"select sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          supplier_id as string,",
+						"          supplier_name as string,",
+						"          contact_name as string,",
+						"          phone as string,",
+						"          country as string,",
+						"          active as string,",
+						"          start_date as string,",
+						"          end_date as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> targetfileinsert",
+						"selectupdate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          supplier_id as string,",
+						"          supplier_name as string,",
+						"          contact_name as string,",
+						"          phone as string,",
+						"          country as string,",
+						"          active as string,",
+						"          start_date as string,",
+						"          end_date as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> targetfileupdate"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_SCD2_Src')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SCD2_Tgt')]"
 			]
 		}
 	]
